@@ -21,44 +21,24 @@ class PubliController extends Controller
         return response()->json($publicacoes);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(Request $request)
     {
-        //
+        $publicacao = Publicacao::create($request->all());
+        return response()->json($publicacao, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        //
+        $publicacao = Publicacao::findOrFail($id);
+        $publicacao->update($request->all());
+
+        $publicacao->save();
+
+        return response()->json([
+            'message' => 'Publicação atualizada com sucesso',
+            'publicacao' => $publicacao
+        ]);
     }
 
     /**
@@ -66,6 +46,9 @@ class PubliController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Publicacao::destroy($id);
+        return response()->json([
+            'message' => 'Publicação deletada com sucesso'
+        ]);
     }
 }
