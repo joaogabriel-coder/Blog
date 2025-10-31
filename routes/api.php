@@ -6,11 +6,13 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\FavoritoController;
 
-Route::get('/usuarios', [UsuarioController::class, 'index']);
-Route::post('/usuarios', [UsuarioController::class, 'store']);
+Route::apiResource('/usuarios', UsuarioController::class);
+Route::get('/usuarios/{id}/publicacoes', [UsuarioController::class, 'publicacoes']);
+Route::get('/usuarios/{id}/favoritos', [UsuarioController::class, 'favoritos']);
 
-Route::get('/publicacoes', [PubliController::class, 'index']);
-Route::get('/comentarios', [ComentarioController::class, 'index']);
-Route::get('/favoritos', [FavoritoController::class, 'index']);
+Route::apiResource('/publicacoes', PubliController::class);
 
+Route::apiResource('/comentarios', ComentarioController::class);
+
+Route::apiResource('/favoritos', FavoritoController::class);
 

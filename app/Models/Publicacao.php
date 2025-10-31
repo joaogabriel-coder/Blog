@@ -20,10 +20,10 @@ class Publicacao extends Model
 
     public function usuario()
     {
-        return $this->belongsTo(Usuario::class);
+        return $this->belongsTo(Usuario::class, 'usuario_id');
     }
     public function favoritos()
     {
-        return $this->hasMany(Favorito::class, 'favoritos', 'publicacao_id', 'usuario_id');
+        return $this->hasMany(Favorito::class, 'publicacao_id');
     }  
 }
