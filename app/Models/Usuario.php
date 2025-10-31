@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Publicacao;
+use App\Models\Favorito;
 
 class Usuario extends Model
 {
@@ -20,7 +22,7 @@ class Usuario extends Model
     }
     public function favoritos()
     {
-        return $this->hasMany(Favorito::class, 'usuario_id');
+        return $this->hasMany(Favorito::class, 'favoritos', 'usuario_id', 'publicacao_id');
     }   
     public function comentarios()
     {

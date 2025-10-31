@@ -7,6 +7,10 @@ use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\FavoritoController;
 
 Route::get('/usuarios', [UsuarioController::class, 'index']);
+Route::post('/usuarios', [UsuarioController::class, 'store']);
+
 Route::get('/publicacoes', [PubliController::class, 'index']);
 Route::get('/comentarios', [ComentarioController::class, 'index']);
 Route::get('/favoritos', [FavoritoController::class, 'index']);
+
+
