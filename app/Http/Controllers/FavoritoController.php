@@ -18,4 +18,32 @@ class FavoritoController extends Controller
         $favoritos = Favorito::all();
         return response()->json($favoritos);
     }
+    public function store(Request $request)
+    {
+        $data = $request->only(['usuario_id', 'publicacao_id']);
+        $publicacaoID = $data['publicacao_id'];
+
+        if(!Publicacao::find($publicacaoID)) {
+            return response()->json([
+                'message' => 'Publicação não encontrada.',
+                'detalhe' => "Não exiuste publicação com o ID {$publicacaoID}."
+            ], 404);
+        }
+
+        $favorito = Favorito::firstOrCreate($data);
+        if($favorito->wasRecentlyCreated) {
+            return response()->json($favorito, 201);
+        }
+        return response()->json([
+        'message' => 'Publicação já favoritada.',
+        'favorito' => $favorito
+    ], 200);
+    }
+    public function destroy(string $id)
+    {
+        Favorito::destroy($id);
+        return response()->json([
+            'message' => 'Favorito deletado com sucesso'
+        ]);
+    }
 }

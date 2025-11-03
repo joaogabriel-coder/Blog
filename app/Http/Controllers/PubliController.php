@@ -12,9 +12,7 @@ use App\Models\Usuario;
 
 class PubliController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         $publicacoes = Publicacao::all();
@@ -41,9 +39,7 @@ class PubliController extends Controller
         ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    
     public function destroy(string $id)
     {
         Publicacao::destroy($id);

@@ -15,4 +15,3 @@ Route::apiResource('/publicacoes', PubliController::class);
 Route::apiResource('/comentarios', ComentarioController::class);
 
 Route::apiResource('/favoritos', FavoritoController::class);
-
