@@ -9,6 +9,7 @@ use App\Http\Controllers\FavoritoController;
 Route::apiResource('/usuarios', UsuarioController::class);
 Route::get('/usuarios/{id}/publicacoes', [UsuarioController::class, 'publicacoes']);
 Route::get('/usuarios/{id}/favoritos', [UsuarioController::class, 'favoritos']);
+Route::post('/usuarios/login', [UsuarioController::class, 'login']);
 
 Route::apiResource('/publicacoes', PubliController::class);
 
