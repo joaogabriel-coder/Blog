@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Hash;
 
 
 class UsuarioController extends Controller
@@ -30,7 +31,7 @@ class UsuarioController extends Controller
         $usuario = Usuario::create([
             'nome' => $request->nome,
             'email' => $request->email,
-            'password' => $request->password,
+            'password' => bcrypt($request->password),
         ]);
 
         return response()->json([
@@ -90,5 +91,20 @@ class UsuarioController extends Controller
         return response()->json([
             'message' => 'Usuário deletado com sucesso'
         ], 200);
+    }
+    public function login(Request $request)
+    {
+        $usuario = Usuario::where('email', $request->email)->first();
+
+        if (!$usuario || !Hash::check($request->password, $usuario->password)) {
+            return response()->json(['message' => 'Credenciais inválidas'], 401);
+        }
+
+        $token = $usuario->createToken('api-token')->plainTextToken;
+
+        return response()->json([
+            'usuario' => $usuario,
+            'token' => $token
+        ]);
     }
 }
