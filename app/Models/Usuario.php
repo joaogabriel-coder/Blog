@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Publicacao;
 use App\Models\Favorito;
-use App\Models\Comentario;
+use App\Models\Comentario;  
 
 class Usuario extends Model
 {
