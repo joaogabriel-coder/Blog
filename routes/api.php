@@ -10,6 +10,7 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::apiResource('/usuarios', UsuarioController::class);
     Route::get('/usuarios/{id}/publicacoes', [UsuarioController::class, 'publicacoes']);
     Route::get('/usuarios/{id}/favoritos', [UsuarioController::class, 'favoritos']);
+    Route::post('/logout', [UsuarioController::class, 'logout']);
 
     Route::apiResource('/publicacoes', PubliController::class);
 
