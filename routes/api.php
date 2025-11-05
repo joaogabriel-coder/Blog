@@ -13,6 +13,7 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::post('/logout', [UsuarioController::class, 'logout']);
 
     Route::apiResource('/publicacoes', PubliController::class);
+    Route::get('/publicacoes/{id}', [PubliController::class, 'show']);
 
     Route::apiResource('/comentarios', ComentarioController::class);
 

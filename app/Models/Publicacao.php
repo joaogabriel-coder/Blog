@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Usuario;
 use App\Models\Favorito;
+use Illuminate\Support\Facades\Storage;
 
 class Publicacao extends Model
 {
@@ -18,6 +19,14 @@ class Publicacao extends Model
         'usuario_id',
         'foto',
     ];
+    protected $hidden =['foto'];
+    
+    protected $appends = ['foto_url'];
+
+    public function getFotoUrlAttribute()
+    {
+        return $this->foto ? asset(Storage::url($this->foto)) : null;
+    }
 
     public function usuario()
     {
@@ -26,5 +35,5 @@ class Publicacao extends Model
     public function favoritos()
     {
         return $this->hasMany(Favorito::class, 'publicacao_id');
-    }  
+    }
 }
