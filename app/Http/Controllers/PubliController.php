@@ -12,6 +12,7 @@ use App\Models\Comentario;
 use App\Models\Favorito;
 use Illuminate\Support\Facades\Storage;
 
+
 class PubliController extends Controller
 {
 
@@ -66,7 +67,7 @@ class PubliController extends Controller
                 'titulo' => $publicacao->titulo,
                 'descricao' => $publicacao->descricao,
                 'usuario_id' => $publicacao->usuario_id,
-                'foto' => $urlCompleta,
+                'foto_url' => $urlCompleta,
                 'created_at' => $publicacao->created_at,
                 'updated_at' => $publicacao->updated_at,
             ]
@@ -89,10 +90,17 @@ class PubliController extends Controller
 
     public function destroy(string $id)
     {
-        Publicacao::destroy($id);
+        $publicacao = Publicacao::findOrFail($id);
+
+        if($publicacao->foto) {
+            Storage::disk('public')->delete($publicacao->foto);
+        }
+
         Comentario::where('publicacao_id', $id)->delete();
         Favorito::where('publicacao_id', $id)->delete();
-        
+
+        $publicacao->delete();
+
         return response()->json([
             'message' => 'Publicação deletada com sucesso'
         ]);

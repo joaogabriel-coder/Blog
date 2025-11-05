@@ -9,11 +9,13 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Hash;
-
+use App\Models\Publicacao;
+use App\Models\Favorito;
+use App\Models\Comentario;
 
 class UsuarioController extends Controller
 {
-    
+
     public function index()
     {
         $usuarios = Usuario::all();
@@ -43,7 +45,7 @@ class UsuarioController extends Controller
     public function publicacoes($id)
     {
         $usuario = Usuario::findOrFail($id);
-        $publicacoes = $usuario->publicacoes; 
+        $publicacoes = $usuario->publicacoes;
         return response()->json([
             'usuario' => $usuario->nome,
             'publicacoes' => $publicacoes
@@ -74,7 +76,7 @@ class UsuarioController extends Controller
         }
         if ($request->has('email')) {
             $usuario->email = $request->email;
-            
+
         }
 
         $usuario->save();
@@ -84,10 +86,21 @@ class UsuarioController extends Controller
             'usuario' => $usuario
         ], 200);
     }
-    
+
     public function destroy(string $id)
     {
-        Usuario::destroy($id);
+        $usuario = Usuario::findOrFail($id);
+
+        if($usuario->foto) {
+            Storage::disk('public')->delete($usuario->foto);
+        }
+
+        Publicacao::where('usuario_id', $id)->delete();
+        Comentario::where('usuario_id', $id)->delete();
+        Favorito::where('usuario_id', $id)->delete();
+
+        $usuario->delete();
+
         return response()->json([
             'message' => 'Usuário deletado com sucesso'
         ], 200);
