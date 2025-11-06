@@ -1,5 +1,5 @@
 <x-layout>
-    <divc class="row">
+    <divc class="container">
         @if(@session()->has('status'))
             <span class="text text-success">{{session()->get('status')}}</span>
         @endif
@@ -12,7 +12,7 @@
             @enderror
             <input type="text" name="email" placeholder="Email">
 
-            <button type="submit">Enviar link de recuperação de senha</button>
+            <button type="submit" class="">Enviar link de recuperação de senha</button>
         </form>
     </div>
 </x-layout>

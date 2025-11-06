@@ -1,5 +1,5 @@
 <x-layout>
-    <divc class="row">
+    <divc class="container">
         @if(@session()->has('status'))
             <span class="text text-success">{{session()->get('status')}}</span>
         @endif
