@@ -99,7 +99,7 @@ class UsuarioController extends Controller
         Comentario::where('usuario_id', $id)->delete();
         Favorito::where('usuario_id', $id)->delete();
 
-        $usuario->delete();
+        $usuario->delete(); 
 
         return response()->json([
             'message' => 'Usuário deletado com sucesso'

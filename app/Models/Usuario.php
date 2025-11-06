@@ -9,11 +9,12 @@ use App\Models\Publicacao;
 use App\Models\Favorito;
 use App\Models\Comentario;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 
 class Usuario extends Authenticatable
 {
-    use HasFactory, HasApiTokens;
+    use HasFactory, HasApiTokens, Notifiable;
     protected $table = 'usuarios';
     protected $fillable = [
         'nome',
@@ -27,7 +28,7 @@ class Usuario extends Authenticatable
     public function favoritos()
     {
         return $this->hasMany(Favorito::class, 'usuario_id');
-    }   
+    }
     public function comentarios()
     {
         return $this->hasMany(Comentario::class, 'usuario_id');
