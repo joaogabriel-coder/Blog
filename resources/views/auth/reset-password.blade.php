@@ -4,11 +4,11 @@
             <span class="text text-success">{{session()->get('status')}}</span>
         @endif
 
-        <h2>Resetar Senha</h2>
+        <h2 >Resetar Senha</h2>
         <form action="{{ route('password.update') }}" method="POST">
             @csrf
 
-            <input type="hidden" name="token" value="{{ $token }}">
+            <input type="hidden" name="token" value="{{ $token }}" >
 
             @error('email')
                 <div class="alert alert-danger">{{ $message }}</div>

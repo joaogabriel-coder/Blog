@@ -4,7 +4,7 @@
             <span class="text text-success">{{session()->get('status')}}</span>
         @endif
 
-        <h2>Resetar Senha</h2>
+        <h2 >Resetar Senha</h2>
         <form action="{{ route('password.email') }}" method="POST">
             @csrf
             @error('email')
