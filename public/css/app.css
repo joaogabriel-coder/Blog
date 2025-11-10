@@ -14,9 +14,10 @@ body {
 }
 
 
-h1, h2, h3 {
-  color: #222;
+ h2 {
+  color: black;
   margin-bottom: 15px;
+  text-align: center;
 }
 
 
@@ -46,7 +47,6 @@ button {
   padding: 10px 15px;
   border-radius: 5px;
   cursor: pointer;
-  border-radius: 5px;
 }
 
 button:hover {

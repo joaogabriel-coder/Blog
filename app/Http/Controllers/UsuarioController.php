@@ -99,7 +99,7 @@ class UsuarioController extends Controller
         Comentario::where('usuario_id', $id)->delete();
         Favorito::where('usuario_id', $id)->delete();
 
-        $usuario->delete(); 
+        $usuario->delete();
 
         return response()->json([
             'message' => 'Usuário deletado com sucesso'
@@ -111,6 +111,10 @@ class UsuarioController extends Controller
 
         if (!$usuario || !Hash::check($request->password, $usuario->password)) {
             return response()->json(['message' => 'Credenciais inválidas'], 401);
+        }
+
+        if($usuario->tokens()->count()>0){
+            return response()->json(['messege'=> 'Usuário já está logado'], 403);
         }
 
         $token = $usuario->createToken('api-token')->plainTextToken;

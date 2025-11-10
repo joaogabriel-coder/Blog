@@ -34,20 +34,20 @@ class ComentarioController extends Controller
         return response()->json($comentarios, 201);
     }
 
-    
+
     public function update(Request $request, string $id)
     {
-        $data = $request->only(['usuario_id', 'publicacao_id']);
-        $comentariosID = $data['publicacao_id'];
-        if(!Publicacao::find($comentariosID)) {
+        $comentarios = Comentario::findOrFail($id);
+
+        if(!Publicacao::find($comentarios->publicacao_id)) {
             return response()->json([
                 'message' => 'Publicação não encontrada.',
                 'detalhe' => "Não exiuste publicação com o ID {$comentariosID}."
             ], 404);
         }
-        $comentarios = Comentario::findOrFail($id);
-        $comentarios->update($request->all());
-        $comentarios->save();
+
+        $comentarios->update($request->only(['texto']));
+
         return response()->json([
             'message' => 'Comentário atualizado com sucesso',
             'comentarios' => $comentarios
@@ -55,7 +55,7 @@ class ComentarioController extends Controller
     }
 
     public function destroy(string $id)
-    {   
+    {
         Comentario::destroy($id);
         return response()->json([
             'message' => 'Comentário deletado com sucesso'
