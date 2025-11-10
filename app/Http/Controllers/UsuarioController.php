@@ -113,9 +113,7 @@ class UsuarioController extends Controller
             return response()->json(['message' => 'Credenciais inválidas'], 401);
         }
 
-        if($usuario->tokens()->count()>0){
-            return response()->json(['messege'=> 'Usuário já está logado'], 403);
-        }
+        $usuario->tokens()->delete();
 
         $token = $usuario->createToken('api-token')->plainTextToken;
 

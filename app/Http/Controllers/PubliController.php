@@ -41,9 +41,10 @@ class PubliController extends Controller
         $request->validate([
             'titulo' => 'required|string|max:255',
             'descricao'=> 'required|string|max:255',
-            'usuario_id'=> 'required|integer|exists:usuarios,id',
             'foto'=> 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        $usuario = auth()->user();
 
         $publicacao = new Publicacao();
         $publicacao->titulo = $request->titulo;
@@ -77,8 +78,14 @@ class PubliController extends Controller
     public function update(Request $request, string $id)
     {
         $publicacao = Publicacao::findOrFail($id);
-        $publicacao->update($request->all());
+        $usuario = auth()->user();
 
+        $publicacao->update($request->all());
+        if($publicacao->usuario_id !== $usuario->id){
+            return response()->json([
+                'messege'=>'Você não tem permissão de excluir essa publicação'
+            ], 403);
+        }
         $publicacao->save();
 
         return response()->json([
@@ -91,6 +98,13 @@ class PubliController extends Controller
     public function destroy(string $id)
     {
         $publicacao = Publicacao::findOrFail($id);
+        $usuario = auth()->user();
+
+        if($publicacao->usuario_id !== $usuario->id){
+            return response()->json([
+                'messege'=>'Você não tem permissão de excluir essa publicação'
+            ], 403);
+        }
 
         if($publicacao->foto) {
             Storage::disk('public')->delete($publicacao->foto);
