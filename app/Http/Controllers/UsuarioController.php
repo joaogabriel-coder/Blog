@@ -65,12 +65,20 @@ class UsuarioController extends Controller
 
     public function update(Request $request, string $id)
     {
-        $request->validate([
+        $usuarios = auth()->user();
+        $usuario = Usuario::findOrFail($id);
+
+        if($usuarios->id !== $usuario->id){
+        return response()->json([
+                'message'=> 'Você não tem permissão de editar esse usuário'
+            ], 403);
+        }
+
+         $request->validate([
             'nome' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|string|email|max:255|unique:usuarios,email,'.$id,
-            'password' => 'sometimes|required|string|min:6',
         ]);
-        $usuario = Usuario::findOrFail($id);
+
         if ($request->has('nome')) {
             $usuario->nome = $request->nome;
         }
@@ -89,7 +97,14 @@ class UsuarioController extends Controller
 
     public function destroy(string $id)
     {
+        $usuarios = auth()->user();
         $usuario = Usuario::findOrFail($id);
+
+        if($usuarios->id !== $usuario->id){
+        return response()->json([
+                'message'=> 'Você não tem permissão de excluir esse usuário'
+            ], 403);
+        }
 
         if($usuario->foto) {
             Storage::disk('public')->delete($usuario->foto);
