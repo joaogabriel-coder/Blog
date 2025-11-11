@@ -59,6 +59,7 @@ class PubliController extends Controller
         }
 
         $publicacao->save();
+
         $urlCompleta = $path ? asset(Storage::url($path)) : null;
 
         return response()->json([
@@ -83,7 +84,7 @@ class PubliController extends Controller
         $publicacao->update($request->all());
         if($publicacao->usuario_id !== $usuario->id){
             return response()->json([
-                'messege'=>'Você não tem permissão de excluir essa publicação'
+                'message'=>'Você não tem permissão de editar essa publicação'
             ], 403);
         }
         $publicacao->save();

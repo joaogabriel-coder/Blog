@@ -15,20 +15,25 @@ class FavoritoController extends Controller
 {
     public function index()
     {
-        $favoritos = Favorito::all();
-        return response()->json($favoritos);
+        $favorito = Favorito::all();
+        return response()->json($favorito);
     }
     public function store(Request $request)
     {
-        $data = $request->only(['usuario_id', 'publicacao_id']);
-        $publicacaoID = $data['publicacao_id'];
+        $data = $request->validate([
+            'publicacao_id'=> 'required|integer|exists:publicacoes,id',
+        ]);
+
+        $usuarioID = auth()->id();
+        $publicacaoID =Publicacao::find($data['publicacao_id']);
 
         if(!Publicacao::find($publicacaoID)) {
             return response()->json([
                 'message' => 'Publicação não encontrada.',
-                'detalhe' => "Não exiuste publicação com o ID {$publicacaoID}."
+                'detalhe' => "Não existe publicação com o ID {$publicacaoID}."
             ], 404);
         }
+        $data['usuario_id'] = $usuarioID;
 
         $favorito = Favorito::firstOrCreate($data);
         if($favorito->wasRecentlyCreated) {
@@ -41,6 +46,13 @@ class FavoritoController extends Controller
     }
     public function destroy(string $id)
     {
+        $favorito = Favorito::findOrFail($id);
+        $usuario = auth()->user();
+        if($favorito->usuario_id !== $usuario->id){
+            return response()->json([
+                'messege'=> 'Você não tem permissão para excluir esse favorito'
+            ], 403);
+        }
         Favorito::destroy($id);
         return response()->json([
             'message' => 'Favorito deletado com sucesso'

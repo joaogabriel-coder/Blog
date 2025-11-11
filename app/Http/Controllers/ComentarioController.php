@@ -20,8 +20,14 @@ class ComentarioController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->only(['usuario_id', 'publicacao_id']);
+        $data = $request->only(['publicacao_id']);
         $comentariosID = $data['publicacao_id'];
+
+        $usuario = auth()->user();
+        $comentarios = new Comentario();
+        $comentarios->texto = $request->texto;
+        $comentarios->publicacao_id =$request->publicacao_id;
+        $comentarios->usuario_id = auth()->id();
 
         if(!Publicacao::find($comentariosID)) {
             return response()->json([
@@ -30,7 +36,7 @@ class ComentarioController extends Controller
             ], 404);
         }
 
-        $comentarios = Comentario::create($request->all());
+       $comentarios->save();
         return response()->json($comentarios, 201);
     }
 
@@ -38,6 +44,13 @@ class ComentarioController extends Controller
     public function update(Request $request, string $id)
     {
         $comentarios = Comentario::findOrFail($id);
+        $usuario = auth()->user();
+
+        if($comentarios->usuario_id !== $usuario->id){
+            return response()->json([
+                'messege'=> 'Você não tem permissão para editar esse comentário'
+            ], 403);
+        }
 
         if(!Publicacao::find($comentarios->publicacao_id)) {
             return response()->json([
@@ -46,8 +59,7 @@ class ComentarioController extends Controller
             ], 404);
         }
 
-        $comentarios->update($request->only(['texto']));
-
+        $comentarios->save();
         return response()->json([
             'message' => 'Comentário atualizado com sucesso',
             'comentarios' => $comentarios
@@ -56,6 +68,13 @@ class ComentarioController extends Controller
 
     public function destroy(string $id)
     {
+        $comentarios = Comentario::findOrFail($id);
+        $usuario = auth()->user();
+        if($comentarios->usuario_id !== $usuario->id){
+            return response()->json([
+                'messege'=> 'Você não tem permissão para excluir essa publicação'
+            ], 403);
+        }
         Comentario::destroy($id);
         return response()->json([
             'message' => 'Comentário deletado com sucesso'
