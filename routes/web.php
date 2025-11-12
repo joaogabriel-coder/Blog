@@ -8,58 +8,29 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Models\Usuario;
+use App\Http\Controllers\PasswordResetController;
 
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/forgot-password', function () {
+//rota para mostrar a view para o usuário digitar seu email para fazer a verificação
+Route::get('/esqueci-a-senha', function(){
     return view('auth.forgot-password');
-})->middleware('guest')->name('password.request');
+})->name('password.forgot');
 
+//rota para mostrar a view para o usuário digitar o codigo OTP
+Route::get('/verificacao-otp', function(){
+    return view('auth.confirmation-otp');
+})->name('otp-verificacao');
 
-Route::post('/forgot-password', function (Request $request) {
-    $request->validate(['email' => 'required|email']);
+//rota para mostrar a view para o usuario digitar sua nova senha
+Route::get('/resetar-senha', function(){
+    return view('auth.reset-password');
+})->name('senha-resetar');
 
-    $status = Password::sendResetLink(
-        $request->only('email')
-    );
-
-    return $status === Password::ResetLinkSent
-        ? back()->with(['status' => __($status)])
-        : back()->withErrors(['email' => __($status)]);
-})->middleware('guest')->name('password.email');
-
-Route::get('/reset-password/{token}', function (string $token) {
-    return view('auth.reset-password', ['token' => $token]);
-})->middleware('guest')->name('password.reset');
-
-Route::get('/reset-password/{token}', function (string $token) {
-    return view('auth.reset-password', ['token' => $token]);
-})->middleware('guest')->name('password.reset');
-
-
-
-Route::post('/reset-password', function (Request $request) {
-    $request->validate([
-        'token' => 'required',
-        'email' => 'required|email',
-        'password' => 'required|confirmed',
-    ]);
-
-    $status = Password::reset(
-        $request->only('email', 'password', 'password_confirmation', 'token'),
-        function (Usuario $user, string $password) {
-            $user->password = Hash::make($password);
-            $user->save();
-
-            event(new PasswordReset($user));
-        }
-    );
-
-    return $status === Password::PasswordReset
-        ? redirect()->route('password.request')->with('status', __($status))
-        : back()->withErrors(['email' => [__($status)]]);
-})->middleware('guest')->name('password.update');
-
+//rotas que os formulários POST envia
+Route::post('/password/solicitar-reset', [PasswordResetController::class, 'solicitarReset'])->name('password.solicitar-reset');
+Route::post('/verificacao/verificar-otp', [PasswordResetController::class, 'verificarOtp'])->name('verificacao.verificar-otp');
+Route::post('/password/redefinir', [PasswordResetController::class, 'redefinirSenha'])->name('password.redefinir');

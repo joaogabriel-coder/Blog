@@ -34,9 +34,4 @@ class Usuario extends Authenticatable
     {
         return $this->hasMany(Comentario::class, 'usuario_id');
     }
-    public function sendPasswordResetNotification($token): void
-    {
-        $url = 'http://127.0.0.1:8000/reset-password/' .$token;
-        $this->notify(new ResetPasswordNotification($url));
-    }
 }
