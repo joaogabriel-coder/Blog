@@ -30,7 +30,4 @@ Route::get('/resetar-senha', function(){
     return view('auth.reset-password');
 })->name('senha-resetar');
 
-//rotas que os formulários POST envia
-Route::post('/password/solicitar-reset', [PasswordResetController::class, 'solicitarReset'])->name('password.solicitar-reset');
-Route::post('/verificacao/verificar-otp', [PasswordResetController::class, 'verificarOtp'])->name('verificacao.verificar-otp');
-Route::post('/password/redefinir', [PasswordResetController::class, 'redefinirSenha'])->name('password.redefinir');
+

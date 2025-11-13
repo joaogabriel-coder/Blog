@@ -5,6 +5,7 @@ use App\Http\Controllers\PubliController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\FavoritoController;
+use App\Http\Controllers\PasswordResetController;
 
 Route::middleware('auth:sanctum')->group(function (){
     Route::apiResource('/usuarios', UsuarioController::class);
@@ -24,3 +25,7 @@ Route::middleware('auth:sanctum')->group(function (){
 Route::post('/login', [UsuarioController::class, 'login']);
 Route::post('/usuarios', [UsuarioController::class, 'store']);
 
+//rotas que os formulários POST envia
+Route::post('/password/solicitar-reset', [PasswordResetController::class, 'solicitarReset'])->name('password.solicitar-reset');
+Route::post('/verificacao/verificar-otp', [PasswordResetController::class, 'verificarOtp'])->name('verificacao.verificar-otp');
+Route::post('/password/redefinir', [PasswordResetController::class, 'redefinirSenha'])->name('password.redefinir');
