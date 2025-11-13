@@ -40,7 +40,8 @@ class PasswordResetController extends Controller
             //->with('email', $usuario->email)
             //->with('success', 'Um código de verificação foi enviado para seu e-mail.');
             return response()->json([
-                'massege'=>'Código enviado com sucesso'
+                'massege'=>'Código enviado com sucesso',
+                'token'=> $token
             ], 200);
     }
 
@@ -49,8 +50,31 @@ class PasswordResetController extends Controller
         $request->validate([
             'email'=>'required|email|exists:usuarios,email',
             'otp_code'=>'required|string|size:6',
+            'token'=>'required'
         ]);
-        
+        $reset = PassWordResetToken::where('email', $request->email)
+            ->where('otp_code', $request->otp_code)
+            ->where('token', $request->token)
+            ->first();
+        if(!$reset){
+            return response()->json([
+                'message'=>'Código OTP ou token inválido'
+            ], 400);
+            
+        if (Carbon::parse($reset->expires_at)->isPast()) {
+        return response()->json([
+            'message' => 'Código expirado'
+        ], 400);
+    }
+        }
+        //return redirect()
+           // ->route('senha-resetar')
+             //->with('token', $reset->token)
+             //->with('email', $usuario->email)
+             //->with('success', 'Código verificado com sucesso. Agora redefina sua senha');
+        return response()->json([
+            'message'=>'Código verificado com sucesso, redefina sua senha'
+        ], 200);
     }
 
     public function redefinirSenha(Request $request)
