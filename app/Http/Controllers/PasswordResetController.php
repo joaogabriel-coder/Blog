@@ -82,7 +82,7 @@ class PasswordResetController extends Controller
        $request->validate([
             'email'=>'required|email|exists:usuarios,email',
             'token'=>'required',
-            'nova_senha'=>'required|min:6|confirmed',
+            'nova_senha'=>'required|min:6',
             'senha_confirmation'=>'required|same:nova_senha'
         ]);
 
@@ -105,8 +105,8 @@ class PasswordResetController extends Controller
             //], 400);
        // }
 
-        $usuario = UsuarioArr::where('email', $request->email)->first();
-        $usuario->senha = bcrypt($request->nova_senha);
+        $usuario = Usuario::where('email', $request->email)->first();
+        $usuario->password = bcrypt($request->nova_senha);
         $usuario->save();
 
         $reset->delete();
