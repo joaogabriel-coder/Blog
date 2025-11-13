@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('email')->index();
             $table->string('otp_code', 6)->nullable();
             $table->string('token');
-            $table->timestamp('expires_at')->nullable();
+            $table->dateTime('expires_at')->nullable();
             $table->timestamps();
         });
     }

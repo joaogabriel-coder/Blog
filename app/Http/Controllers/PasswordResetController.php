@@ -27,7 +27,7 @@ class PasswordResetController extends Controller
             [
                 'otp_code' =>$otp_code,
                 'token'=>$token,
-                'expires_at'=>Carbon::now()->addMinutes(15),
+                'expires_at'=>now()->addMinutes(15)->toDateTimeString(),
             ]
         );
          Mail::raw("Seu código de verificação é: $otp_code", function ($message) use ($usuario) {
@@ -60,13 +60,13 @@ class PasswordResetController extends Controller
             return response()->json([
                 'message'=>'Código OTP ou token inválido'
             ], 400);
-            
+        }
         if (Carbon::parse($reset->expires_at)->isPast()) {
         return response()->json([
             'message' => 'Código expirado'
         ], 400);
-    }
         }
+
         //return redirect()
            // ->route('senha-resetar')
              //->with('token', $reset->token)
@@ -79,6 +79,41 @@ class PasswordResetController extends Controller
 
     public function redefinirSenha(Request $request)
     {
+       $request->validate([
+            'email'=>'required|email|exists:usuarios,email',
+            'token'=>'required',
+            'nova_senha'=>'required|min:6|confirmed',
+            'senha_confirmation'=>'required|same:nova_senha'
+        ]);
 
+        $reset = PassWordResetToken::where('email', $request->email)
+            ->where('token', $request->token)
+            ->first();
+        if(!$reset){
+            return response()->json([
+                'message'=>'Token inválido'
+            ], 400);
+        }
+        if (Carbon::parse($reset->expires_at)->isPast()) {
+        return response()->json([
+            'message' => 'Token expirado'
+        ], 400);
+        }
+        //if(nova_senha !== senha_confirmation){
+            //return response()->json([
+              //  'message'=>'Senhas diferentes'
+            //], 400);
+       // }
+
+        $usuario = UsuarioArr::where('email', $request->email)->first();
+        $usuario->senha = bcrypt($request->nova_senha);
+        $usuario->save();
+
+        $reset->delete();
+
+        return response()->json([
+            'message'=> 'Senha redefinida com sucesso'
+        ]);
     }
 }
+

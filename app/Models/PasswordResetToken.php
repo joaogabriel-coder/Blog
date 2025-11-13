@@ -15,11 +15,11 @@ class PasswordResetToken extends Model
         'email',
         'otp_code',
         'token',
-        'expires_at' =>'datatime',
+        'expires_at'
     ];
 
     protected $casts = [
-        'expires_at' => 'datatime',
+        'expires_at' => 'datetime',
     ];
     public function isExpired(): bool
     {
