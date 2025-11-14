@@ -99,12 +99,6 @@ class PasswordResetController extends Controller
             'message' => 'Token expirado'
         ], 400);
         }
-        //if(nova_senha !== senha_confirmation){
-            //return response()->json([
-              //  'message'=>'Senhas diferentes'
-            //], 400);
-       // }
-
         $usuario = Usuario::where('email', $request->email)->first();
         $usuario->password = bcrypt($request->nova_senha);
         $usuario->save();
