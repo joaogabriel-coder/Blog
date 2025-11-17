@@ -46,6 +46,7 @@ class ComentarioController extends Controller
         $comentarios = Comentario::findOrFail($id);
         $usuario = auth()->user();
 
+        $comentarios->texto = $request->texto;
         if($comentarios->usuario_id !== $usuario->id){
             return response()->json([
                 'messege'=> 'Você não tem permissão para editar esse comentário'
@@ -72,7 +73,7 @@ class ComentarioController extends Controller
         $usuario = auth()->user();
         if($comentarios->usuario_id !== $usuario->id){
             return response()->json([
-                'messege'=> 'Você não tem permissão para excluir essa publicação'
+                'messege'=> 'Você não tem permissão para excluir esse comentário'
             ], 403);
         }
         Comentario::destroy($id);
