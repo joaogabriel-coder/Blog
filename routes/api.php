@@ -32,13 +32,3 @@ Route::post('/usuarios', [UsuarioController::class, 'store']); // Registro de us
 Route::post('/password/solicitar-reset', [PasswordResetController::class, 'solicitarReset'])->name('password.solicitar-reset');
 Route::post('/verificacao/verificar-otp', [PasswordResetController::class, 'verificarOtp'])->name('verificacao.verificar-otp');
 Route::post('/password/redefinir', [PasswordResetController::class, 'redefinirSenha'])->name('password.redefinir');
-
-// --- CORREÇÃO DE CORS FINAL (A "MÁGICA") ---
-// Esta rota captura qualquer requisição do tipo OPTIONS (Preflight)
-// que o navegador faz antes do POST, e força uma resposta positiva.
-Route::options('/{any}', function (Request $request) {
-    return response('', 200)
-        ->header('Access-Control-Allow-Origin', '*') 
-        ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-        ->header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, X-Token-Auth, Authorization');
-})->where('any', '.*');
