@@ -26,9 +26,7 @@ return [
     */
 
     'allowed_origins' => [
-        'http://localhost:5173', // Para o Front-end local (Vite)
-        'http://localhost:8000', // Para o Laravel local
-        'https://blog-front-psi-smoky.vercel.app', // <--- SEU DOMÍNIO DA VERCEL
+        '*', // <--- SEU DOMÍNIO DA VERCEL
     ],
 
     'allowed_origins_patterns' => [],
