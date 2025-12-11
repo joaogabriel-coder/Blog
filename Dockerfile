@@ -38,8 +38,5 @@ RUN chown -R www-data:www-data /var/www/html \
 # Copia a configuração do Nginx para a pasta correta do container
 COPY nginx.conf /etc/nginx/sites-available/default
 
-# Remove a configuração padrão do Nginx
-RUN rm /etc/nginx/conf.d/default.conf
-
 # Expõe a porta que o Nginx usará para comunicação externa
 EXPOSE 8080
