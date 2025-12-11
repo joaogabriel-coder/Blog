@@ -24,7 +24,7 @@ COPY . /var/www/html
 RUN composer install --no-dev --optimize-autoloader
 
 # Limpa e refaz o cache de configuração do Laravel
-RUN php artisan config:clear && php artisan config:cache
+#RUN php artisan config:clear && php artisan config:cache
 
 # Garante as permissões corretas
 RUN chown -R www-data:www-data /var/www/html \
