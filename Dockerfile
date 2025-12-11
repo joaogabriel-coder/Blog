@@ -1,6 +1,3 @@
-
-
-# Usa uma imagem oficial do PHP FPM (FastCGI Process Manager)
 FROM php:8.2-fpm
 
 # Instala dependências do sistema e Nginx
@@ -9,34 +6,36 @@ RUN apt-get update && apt-get install -y \
     unzip \
     nginx \
     libpq-dev \
-    # Limpa o cache após a instalação
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
-# Instala extensões PHP essenciais (inclua 'pdo_mysql' se estiver usando MySQL)
+# Instala extensões PHP essenciais
 RUN docker-php-ext-install pdo pdo_mysql opcache
 
-# Define o diretório de trabalho do container como a raiz do seu projeto
 WORKDIR /var/www/html
 
 # Instala o Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# === INÍCIO DA CORREÇÃO ===
-# 1. Copia TODO o código da aplicação (incluindo composer.* e artisan)
+# Copia TODO o código da aplicação ANTES de instalar o Composer
 COPY . /var/www/html
 
-# 2. Roda o comando de instalação do Composer (agora o artisan existe)
+# Roda o comando de instalação do Composer
 RUN composer install --no-dev --optimize-autoloader
 
-# === FIM DA CORREÇÃO ===
-
-# Garante as permissões corretas para o Laravel
+# Garante as permissões corretas
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage
 
-# Copia a configuração do Nginx para a pasta correta do container
+# Copia a configuração do Nginx
 COPY nginx.conf /etc/nginx/sites-available/default
 
-# Expõe a porta que o Nginx usará para comunicação externa
+# Cria link simbólico para ativar sua configuração (desativa o padrão)
+RUN ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+
+# Expõe a porta que o Nginx usará
 EXPOSE 8080
+
+# === COMANDO DE START ===
+# Inicia o Nginx em foreground e o PHP-FPM em foreground.
+CMD /usr/sbin/nginx -g "daemon off;" && php-fpm -F
