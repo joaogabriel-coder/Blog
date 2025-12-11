@@ -1,3 +1,5 @@
+
+
 # Usa uma imagem oficial do PHP FPM (FastCGI Process Manager)
 FROM php:8.2-fpm
 
@@ -20,12 +22,14 @@ WORKDIR /var/www/html
 # Instala o Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copia o composer.json e instala as dependências
-COPY composer.json composer.lock ./
+# === INÍCIO DA CORREÇÃO ===
+# 1. Copia TODO o código da aplicação (incluindo composer.* e artisan)
+COPY . /var/www/html
+
+# 2. Roda o comando de instalação do Composer (agora o artisan existe)
 RUN composer install --no-dev --optimize-autoloader
 
-# Copia o restante do código da aplicação
-COPY . .
+# === FIM DA CORREÇÃO ===
 
 # Garante as permissões corretas para o Laravel
 RUN chown -R www-data:www-data /var/www/html \
