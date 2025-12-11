@@ -27,15 +27,12 @@ RUN composer install --no-dev --optimize-autoloader
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage
 
-# Copia a configuração do Nginx
-COPY nginx.conf /etc/nginx/sites-available/default
-
-# Cria link simbólico para ativar sua configuração (desativa o padrão)
-RUN ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+# === CORREÇÃO FINAL DO NGINX ===
+# Copia a sua configuração para o diretório de inclusão do Nginx, com o nome .conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf 
 
 # Expõe a porta que o Nginx usará
 EXPOSE 8080
 
-# === COMANDO DE START ===
-# Inicia o Nginx em foreground e o PHP-FPM em foreground.
+# Comando de Start
 CMD /usr/sbin/nginx -g "daemon off;" && php-fpm -F
