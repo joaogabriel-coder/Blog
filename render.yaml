@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: sua-api-laravel
+    env: php
+    buildCommand: 'composer install --no-dev --prefer-dist'
+    startCommand: 'php artisan serve --host=0.0.0.0'
